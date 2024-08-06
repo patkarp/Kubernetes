@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubemq
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: kubemq
+  template:
+    metadata:
+      labels:
+        app: kubemq
+    spec:
+      containers:
+      - name: kubemq
+        image: kubemq/kubemq:latest
+        ports:
+        - containerPort: 50000
+          name: api
+        - containerPort: 50001
+          name: grpc
+        - containerPort: 9090
+          name: dashboard
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: kubemq
+spec:
+  ports:
+  - name: api
+    port: 50000
+    targetPort: 50000
+  - name: grpc
+    port: 50001
+    targetPort: 50001
+  - name: dashboard
+    port: 9090
+    targetPort: 9090
+  selector:
+    app: kubemq
+  type: LoadBalancer
