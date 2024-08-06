@@ -41,18 +41,18 @@ generic aws-secret \
 
 Check that the secret was created:
 ```bash
-kubectl describe secret aws-secret
+kubectl describe secret aws-secret -n crossplane-system
 ```
 
 ### Step 3: Get the AWS provider and provider config ready, or Any other Cloud Pro
 
-Now let's configure the AWS provider and use the credentials we created.
+Now let's configure the AWS provider and use the credentials we created. This provider.yaml will create a S3 Provider, or S3 CRD (Custom Resource defination)
 
 ```bash
-kubectl apply -f provider.yaml
+kubectl apply -f provider.yaml -n crossplane-system
 ```
 
-You now have your Kubernetes cluster ready with crossplane installed.
+You now have your Kubernetes cluster ready with crossplane installed to work with s3
 
 ### Step 4: Create the S3 Bucket
 
@@ -74,7 +74,7 @@ Upon successful provisioning, you should see the following output:
 
 ```
 NAME                  READY   SYNCED   EXTERNAL-NAME         AGE
-Patsbucket  True    True     Patsbucket   11m
+Patsbucket  True    True     Patsbucket   5m
 ```
 
 ### Step 6: Verify Drift Correction
