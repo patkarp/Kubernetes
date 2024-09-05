@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: log-operator
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: log-operator
+  template:
+    metadata:
+      labels:
+        app: log-operator
+    spec:
+      containers:
+      - name: log-operator
+        image: your-operator-image
+        imagePullPolicy: Always
+      serviceAccountName: operator-sa

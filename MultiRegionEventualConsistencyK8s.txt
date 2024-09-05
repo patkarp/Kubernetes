@@ -1,0 +1,49 @@
+A Service Architecture for Eventual Consistency between Two Kubernetes Clusters:
+
+Below service architecture uses eventual consistency between two Kubernetes clusters located in different regions.  We will create a service architecture to 
+achieve eventual consistency between two Kubernetes clusters located in different regions. 
+We'll use REST APIs over HTTPS to ensure secure communication between the clusters. 
+
+The architecture has following components:
+Service A: Primary service deployed in k8s Cluster 1.
+Service B: Secondary service deployed in k8s Cluster 2.
+API Gateway: This will manage API requests and routes them to the appropriate services. 
+Message Queue: Queue to talk and ensure data is consistent between Service A and Service B.
+Database: Responsible for storing data for each service. Like PostgresSQL.
+Sync Service : This will handle synchronization between service A and Service B to get eventual consistency.
+
+It will work as follows:
+We Deploy Service A in K8s Cluster 1 and Service B in K8s Cluster 2.
+
+API Gateway: Deploy an API Gateway in each cluster to manage and route API requests.
+Message Queue: Use a message queue service like Kafka or RMQ for synchronizing data between the clusters.
+Sync Service: Deploy a Sync Service in each cluster that will perform Data Synchronisation. This Sync Service will listens to the message queue for updates and synchronizes data between Database A and Database B.
+Data Flow: When data is updated in Service A, the Sync Service in Cluster 1 sends a message to the message queue.
+The Sync Service in Cluster 2 receives the message and updates Database B accordingly, ensuring eventual consistency.
+
+
+ -------------------        ------------------- 
+|      K8s          |      |      K8s          |
+|   Cluster 1       |      |   Cluster 2       |
+|                   |      |                   |
+|  -------------    |      |  -------------    |
+| |   Service A |   |      | |   Service B |   |
+|  -------------    |      |  -------------    |
+|        |          |      |        |          |
+|        v          |      |        v          |
+|  -------------    |      |  -------------    |
+| |  Database A |   |      | |  Database B |   |
+|  -------------    |      |  -------------    |
+|        |          |      |        |          |
+|        v          |      |        v          |
+|  -------------    |      |  -------------    |
+| |Sync Service |   |      | |Sync Service |   |
+|  -------------    |      |  -------------    |
+|        |          |      |        |          |
+|        v          |      |        v          |
+|  -------------    |      | +-------------+   |
+| | Message Queue|  | <--> | | Message Queue|  |
+|  -------------    |      |  -------------    |
+|                   |      |                   |
+ -------------------        ------------------- 
+
